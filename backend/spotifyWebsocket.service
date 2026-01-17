@@ -1,0 +1,13 @@
+[Unit]
+Description=Websocket server to connect Librespot to UI
+After=network.target
+
+[Service]
+User=bwright
+WorkingDirectory=/home/bwright/projects/spotifyBackend
+ExecStart=/home/bwright/projects/spotifyBackend/.venv/bin/python3 /home/bwright/projects/spotifyBackend/websocketServer.py
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target
