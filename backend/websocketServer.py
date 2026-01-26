@@ -3,7 +3,7 @@ import asyncio
 import websockets
 
 port = 8765
-host = "192.168.50.32"
+host = "localhost"
 
 CONNECTED_CLIENTS = set()
 
