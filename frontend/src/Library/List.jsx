@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import List from '@mui/material/List';
 import {
     ListItem,
@@ -32,36 +33,28 @@ const ListComponent = ({ items = [], total, itemsPerPage = 5, currentPage = 1, o
     };
 
     return (<div>
-        <Stack spacing={2}><List sx={{ width: '100%' }}>
-            {items.map(({ name, description, avatar, type, id, uri }, index) => (
-                <>
-                    <ListItem key={`${name}-${description}`} alignItems="flex-start">
-                        <ListItemButton
-                            onClick={(event) => handleListItemClick(event, { type, id, uri })}
-                        >
-                            <ListItemAvatar>
-                                <Avatar alt={name} src={avatar?.at(-1)?.url} />
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={name}
-                                secondary={description &&
-                                    <Typography
-                                        component="span"
-                                        variant="body2"
-                                        sx={{ color: 'text.primary', display: 'inline' }}
-                                    >
-                                        {description}
-                                    </Typography>
+        <Stack spacing={2}>
+            <List dense sx={{ width: '100%' }}>
+                {items.map(({ name, description, avatar, type, id, uri }, index) => (
+                    <Fragment key={`${name}-${description}`}>
+                        <ListItem>
+                            <ListItemButton
+                                component="button"
+                                onClick={(event) => handleListItemClick(event, { type, id, uri })}
+                            >
+                                <ListItemAvatar>
+                                    <Avatar alt={name} src={avatar?.at(-1)?.url} />
+                                </ListItemAvatar>
+                                <ListItemText
+                                    primary={name}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                        <Divider variant="inset" component="li" />
+                    </Fragment>
+                ))}
 
-                                }
-                            />
-                        </ListItemButton>
-                    </ListItem>
-                    <Divider variant="inset" component="li" />
-                </>
-            ))}
-
-        </List>
+            </List>
         </Stack>
         <Stack spacing={2}>
             <Pagination count={Math.ceil(total / itemsPerPage)} onChange={handlePaginationChange} variant="outlined" shape="rounded" />

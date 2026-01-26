@@ -15,7 +15,7 @@ const scope = [
 
 const isDevelopment = process.env.NODE_ENV === 'development';
 const redirectUri = isDevelopment ? process.env.REACT_APP_SPOTIFY_REDIRECT_DEV_TARGET : process.env.REACT_APP_SPOTIFY_REDIRECT_TARGET; 
-console.log('redirectUri', redirectUri)
+
 const getAuthorizeSpotifyUrl = (state) => {
   const params = new URLSearchParams({
     response_type: "code",

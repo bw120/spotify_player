@@ -4,12 +4,16 @@ const styles = {
         height: 480
     },
     contentScreenStyles: {
+        paddingTop: '10px',
         width: '100%',
-        height: '100%',
+        height: 'calc(100% - 60px)',
         display: 'flex',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         flexDirection: 'column'
+    },
+    bottomNav: {
+        height: 60
     }
 };
 

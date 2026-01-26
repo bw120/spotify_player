@@ -20,7 +20,7 @@ const ScreenMap = {
 
 const Main = () => {
   const { selectedScreen, setSelectedScreen } = useAppContext();
-  const { containerStyles, contentScreenStyles } = styles;
+  const { bottomNav, containerStyles, contentScreenStyles } = styles;
   const handleNavChange = (_e, value) => setSelectedScreen(value);
   const SelectedScreen = ScreenMap[selectedScreen];
 
@@ -35,6 +35,7 @@ const Main = () => {
         showLabels
         value={selectedScreen}
         onChange={handleNavChange}
+        sx={bottomNav}
       >
         <BottomNavigationAction label="Search" icon={<SearchRoundedIcon />} />
         <BottomNavigationAction

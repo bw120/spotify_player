@@ -53,7 +53,6 @@ const Search = () => {
         setSelectedContentTypes(defaultContentTypes);
     };
 
-    console.log('Selected content types:', selectedContentTypes);
     return (
         <>
             <FormControl required sx={{ m: 1, width: 300 }}>
