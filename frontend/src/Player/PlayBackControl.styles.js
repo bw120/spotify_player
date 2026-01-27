@@ -6,11 +6,11 @@ const styles = {
         justifyContent: 'center',
         width: '100%',
         color: '#fff',
-        padding: '5px 0',
+        paddingTop: '5px',
     },
     trackInfoBox: ({ palette }) => ({
         width: '90%',
-        paddgin: '10px',
+        paddgin: '5px',
         flexDirection: 'column',
         display: 'flex',
         alignItems: 'center',
@@ -19,9 +19,10 @@ const styles = {
             height: 150
         },
         '& .track-details': {
+            textAlign: 'center',
             '& h1, & h2': {
-                display: 'inline-block',
-                margin: '5px 0',
+                diplay: 'block',
+                margin: '5px',
             },
             '& h1': {
                 color: palette.text.primary
@@ -33,7 +34,10 @@ const styles = {
 
     }),
     controlBox: {
-        margin: '5px 0',
+        margin: '0',
+        '& button': {
+            padding: 0
+        }
     },
     sliderStyles: ({ palette, applyStyles }) => ({
         color: palette.primary.light,
