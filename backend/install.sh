@@ -17,7 +17,7 @@ sudo systemctl start spotifyWebsocket.service
 cd ../frontend
 npm install
 npm run build
-sudo rm -rf /var/www/html/spotify_player
-sudo mkdir -p /var/www/html/spotify_player
-sudo cp -r build/* /var/www/html/spotify_player/
+sudo rm -rf /var/www/html
+sudo mkdir -p /var/www/html
+sudo cp -r build/* /var/www/html
 cd ../backend
