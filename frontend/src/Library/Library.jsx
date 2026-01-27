@@ -2,13 +2,13 @@
 import { useState } from 'react';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 
-import { LibraryProvider } from "./LibraryContext";
 import TopPlaylists from "./UserPlayLists";
-
-
+import TopArtists from "./TopArtistsList";
+import styles from './Library.styles';
 
 const Library = () => {
   const [selectedList, setSelectedList] = useState('topPlaylists');
+  const { libraryContainer} = styles;
 
   const handleChangeSelectedList = (event, newValue) => {
     setSelectedList(newValue);
@@ -16,30 +16,23 @@ const Library = () => {
 
   const PlayListMap = {
     'topPlaylists': TopPlaylists,
-    'featured': () =><div>Featured Playlists</div>
+    'topArtists': TopArtists
   }
   const PlayList = PlayListMap[selectedList];
-  console.log('selectedList', selectedList);
   return (
-    <LibraryProvider>
-      {({ } = {}) => {
-        return (
-          <>
-            <ToggleButtonGroup
-              value={selectedList}
-              exclusive
-              onChange={handleChangeSelectedList}
-              aria-label="Selected Library List"
-            >
-              <ToggleButton value="topPlaylists" aria-label="My Playlists">My Playlists</ToggleButton>
-              <ToggleButton value="featured" aria-label="Featured Playlists">Featured</ToggleButton>
+    <div style={libraryContainer}>
+      <ToggleButtonGroup
+        value={selectedList}
+        exclusive
+        onChange={handleChangeSelectedList}
+        aria-label="Selected Library List"
+      >
+        <ToggleButton value="topPlaylists" aria-label="My Playlists">My Playlists</ToggleButton>
+        <ToggleButton value="topArtists" aria-label="Top Artists">Top Artists</ToggleButton>
 
-            </ToggleButtonGroup>
-            <PlayList/>
-          </>
-        );
-      }}
-    </LibraryProvider>
+      </ToggleButtonGroup>
+      <PlayList />
+    </div>
   )
 };
 

@@ -104,9 +104,17 @@ const PlayBackControl = () => {
                         {albumArtUrl && <img src={albumArtUrl} alt={`Album: ${albumName}`} style={{ marginRight: 10 }} />}
                     </>
                 )}
-                <div>
-                    {loadingTrack ? <Skeleton variant="text" width={225} height={38} style={{ margin: ['20px', 0] }} /> : <h1>{name}</h1>}
-                    {loadingTrack ? <Skeleton variant="text" width={175} height={28} style={{ margin: ['20px', 0] }} /> : <h2>{artists.map(({ name }) => name).join(', ')}</h2>}
+                <div className="track-details">
+                    {loadingTrack ?
+                        <>
+                            <Skeleton variant="text" width={225} height={38} style={{ margin: ['20px', 0] }} />
+                            <Skeleton variant="text" width={175} height={28} style={{ margin: ['20px', 0] }} />
+                        </>
+                        :
+                        <>
+                            <h1>{name}&nbsp;</h1>
+                            <h2> - {artists.map(({ name }) => name).join(', ')}</h2>
+                        </>}
                 </div>
             </Box>
             <Box sx={controlBox}>

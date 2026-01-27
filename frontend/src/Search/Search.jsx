@@ -1,14 +1,33 @@
 import { useState } from 'react';
-import { Box, Button, OutlinedInput, InputLabel, MenuItem, FormControl, Select, Chip, TextField } from '@mui/material';
+import { ToggleButton, ToggleButtonGroup, Stack, Button, TextField } from '@mui/material';
 
 import { search as searchApi } from '../api/search';
+import SearchResultsList from './SearchResultsList';
 
 const Search = () => {
-    const AllContentTypes = ["album", "artist", "playlist", "track", "show", "episode", "audiobook"];
-    const defaultContentTypes = ['Track', 'Album', 'Artist', 'Playlist'];
-    const [selectedContentTypes, setSelectedContentTypes] = useState([...defaultContentTypes]);
+    const allContentTypes = [
+        "track",
+        "artist",
+        "album",
+        "playlist"
+        // GOING TO LEAVE THESE OUT FOR NOW
+        // "show", 
+        // "episode", 
+        // "audiobook"
+    ];
+
+    const mapTypeToRestultKey = {
+        track: 'tracks',
+        artist: 'artists',
+        album: 'albums',
+        playlist: 'playlists'
+    }
+
+    const [selectedContentType, setSelectedContentType] = useState(allContentTypes[0]);
     const [searchQuery, setSearchQuery] = useState('');
-    
+    const [searchResults, setSearchResults] = useState({});
+    const [resultsPagination, setResultsPagination] = useState({});
+
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
     const MenuProps = {
@@ -22,15 +41,17 @@ const Search = () => {
         },
     };
 
-    const handleContentTypeChange = (event) => {
+    const handleChangeSelectedType = (event) => {
         const {
             target: { value },
         } = event;
-
-        setSelectedContentTypes(value);
+        setSelectedContentType(value);
+        if (searchQuery) {
+            getSearchResults(value);
+        }
     }
 
-        const handleSearchChange = (event) => {
+    const handleSearchChange = (event) => {
         const {
             target: { value },
         } = event;
@@ -38,65 +59,68 @@ const Search = () => {
         setSearchQuery(value);
     }
 
-    const getSearchResults = async () => {
-        const limit = 20;
-        const offset = 0;
+    const getSearchResults = async (contentType = selectedContentType, page) => {
+        const currentPage = page || resultsPagination[contentType] || 1;
+        const limit = 8;
+        const offset = (currentPage - 1) * limit;
         const query = searchQuery;
-        const types = selectedContentTypes.map(type => type.toLowerCase());
+        const types = [contentType];
+        const { data } = await searchApi({ limit, offset, query, types });
+        const resultKey = mapTypeToRestultKey[contentType];
+        setSearchResults(prevState => ({ ...prevState, [contentType]: data[resultKey] }));
+        setResultsPagination(prevState => ({ ...prevState, [contentType]: offset }));
+    }
 
-        const results = await searchApi({ limit, offset, query, types });
-        console.log('Search results:', results);
-    };
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        getSearchResults(selectedContentType);
+    }
 
     const clearForm = () => {
         setSearchQuery('');
-        setSelectedContentTypes(defaultContentTypes);
+        setSelectedContentType(allContentTypes[0]);
+        setResultsPagination({});
+        setSearchResults({});
+    };
+
+    const handlePageChange = (page) => {
+        setResultsPagination(prevState => ({ ...prevState, [selectedContentType]: page }));
+        getSearchResults(selectedContentType, page);
     };
 
     return (
         <>
-            <FormControl required sx={{ m: 1, width: 300 }}>
-                <InputLabel id="content-type-label">Content Type</InputLabel>
+            <form onSubmit={handleSubmit}>
+                <Stack direction="row" spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                    <TextField
+                        size="small"
+                        id="Search-input"
+                        label="Search"
+                        value={searchQuery}
+                        variant="outlined"
+                        onChange={handleSearchChange}
+                        autoComplete="off"
+                    />
+                    <Button onClick={handleSubmit} type="submit" variant="contained">Search</Button>
+                    <Button onClick={clearForm} variant="outlined">Clear</Button>
 
-                <Select
-                    labelId="content-type-label"
-                    id="content-type-label"
-                    multiple
-                    value={selectedContentTypes}
-                    onChange={handleContentTypeChange}
-                    input={<OutlinedInput id="select-multiple-chip" label="Content Type" />}
-                    renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                            {selected.map((value) => (
-                                <Chip key={value} label={value} />
-                            ))}
-                        </Box>
-                    )}
-                    MenuProps={MenuProps}
+                </Stack>
+            </form>
+            <Stack>
+                <ToggleButtonGroup
+                    value={selectedContentType}
+                    exclusive
+                    onChange={handleChangeSelectedType}
+                    aria-label="Selected Content Type"
                 >
-                    {AllContentTypes.map((name) => (
-                        <MenuItem
-                            key={name}
-                            value={name}
-                        >
-                            {name}
-                        </MenuItem>
+                    {allContentTypes.map((type) => (
+                        <ToggleButton key={type} value={type} aria-label={type}>
+                            {type.charAt(0).toUpperCase() + type.slice(1)}
+                        </ToggleButton>
                     ))}
-                </Select>
-            </FormControl>
-
-            <FormControl sx={{ m: 1, width: 300 }}>
-                <TextField
-                    required
-                    id="Search-input"
-                    label="Search"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                />
-            </FormControl>
-
-            <Button onClick={getSearchResults} variant="contained">Search</Button>
-            <Button onClick={clearForm} variant="outlined">Clear</Button>
+                </ToggleButtonGroup>
+            </Stack>
+            <SearchResultsList changePage={handlePageChange} results={searchResults[selectedContentType]} contentType={selectedContentType} />
         </>
     );
 }

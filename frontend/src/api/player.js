@@ -30,11 +30,11 @@ const getPlaybackState = async () =>
     return { code, status, error: error || code };
   });
 
-const startPlayback = async ({ deviceId, uri } = {}) =>
+const startPlayback = async ({ deviceId, ...params } = {}) =>
   await axios({
     method: "put",
     url: `${SPOTIFY_API_PLAYER_BASE_URL}/play`,
-    data: { device_id: deviceId, context_uri: uri, ...uri && { offset: { position: 0 } } },
+    data: { device_id: deviceId, ...params },
   }).catch(({ code, status, response: { data: { error } = {} } = {} }) => {
     return { code, status, error: error || code };
   });

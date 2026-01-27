@@ -44,7 +44,6 @@ const PlayerProvider = ({ children }) => {
           selected:
             device.id === defaultDeviceId || device.name === defaultDeviceName,
         }));
-        console.log('updateDevices', updateDevices)
         setDevices(updateDevices);
       }
     });

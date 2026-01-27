@@ -5,25 +5,38 @@ const styles = {
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        color: '#fff'
+        color: '#fff',
+        padding: '5px 0',
     },
-    trackInfoBox: {
+    trackInfoBox: ({ palette }) => ({
         width: '90%',
         paddgin: '10px',
-
+        flexDirection: 'column',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         '& img': {
             height: 150
+        },
+        '& .track-details': {
+            '& h1, & h2': {
+                display: 'inline-block',
+                margin: '5px 0',
+            },
+            '& h1': {
+                color: palette.text.primary
+            },
+            '& h2': {
+                color: palette.text.secondary
+            }
         }
 
-    },
+    }),
     controlBox: {
-        margin: '20px 0',
+        margin: '5px 0',
     },
-    sliderStyles: (t) => ({
-        color: 'rgba(255, 77, 0, 0.87)',
+    sliderStyles: ({ palette, applyStyles }) => ({
+        color: palette.primary.light,
         height: 12,
         width: '90%',
         '& .MuiSlider-thumb': {
@@ -34,10 +47,7 @@ const styles = {
                 boxShadow: '0 2px 12px 0 rgba(0,0,0,0.4)',
             },
             '&:hover, &.Mui-focusVisible': {
-                boxShadow: `0px 0px 0px 8px ${'rgb(0 0 0 / 16%)'}`,
-                ...t.applyStyles('dark', {
-                    boxShadow: `0px 0px 0px 8px ${'rgb(255 255 255 / 16%)'}`,
-                }),
+                boxShadow: `0px 0px 0px 8px ${'rgb(0 0 0 / 16%)'}`
             },
             '&.Mui-active': {
                 width: 25,
@@ -48,10 +58,10 @@ const styles = {
             opacity: 0.30,
         }
     }),
-    playerIcons: {
+    playerIcons: ({ palette }) => ({
         fontSize: '90px',
-        color: 'rgba(255, 77, 1, 0.87)',
-    },
+        color: palette.secondary.main,
+    }),
     trackTiming: {
         height: 24,
         width: '90%',

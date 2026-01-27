@@ -22,11 +22,12 @@ const ProtectedRoute = ({ isLoggedIn }) =>
   isLoggedIn ? <Outlet /> : <Navigate to="/login" replace />;
 
 const App = () => (
-  <Box>
-    <AppProvider>
-      {({ isLoggedIn }) => {
-        return (
-          <ThemeProvider theme={theme}>
+  <ThemeProvider theme={theme}>
+    <Box>
+      <AppProvider>
+        {({ isLoggedIn }) => {
+          return (
+
             <Router>
               <Routes>
                 <Route path="login" element={<Login />} />
@@ -40,11 +41,12 @@ const App = () => (
                 </Route>
               </Routes>
             </Router>
-          </ThemeProvider>
-        );
-      }}
-    </AppProvider>
-  </Box>
+
+          );
+        }}
+      </AppProvider>
+    </Box >
+  </ThemeProvider>
 );
 
 export default App;
