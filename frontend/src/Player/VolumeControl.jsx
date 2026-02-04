@@ -11,7 +11,7 @@ import styles from './VolumeControl.styles';
 const VOLUME_STEP = 5;
 
 const VolumeControl = () => {
-    const { volumeControlBox, volumeControlItem } = styles;
+    const { volumeControlBox, volumeControlItem, speedDial } = styles;
     const { playbackState: { device: { volume_percent } = {} } = {} } = usePlayerContext()
     const [volume, setVolume] = useState(null);
     const [open, setOpen] = useState(false);
@@ -39,8 +39,8 @@ const VolumeControl = () => {
     return <div>
         <SpeedDial
             ariaLabel="SpeedDial tooltip example"
-            sx={{ position: 'absolute', top: 16, right: 16 }}
-            icon={<SpeedDialIcon icon={<VolumeUpRoundedIcon />} />}
+            sx={speedDial}
+            icon={<SpeedDialIcon icon={<VolumeUpRoundedIcon/>} />}
             onClose={handleClose}
             onOpen={handleOpen}
             open={open}
@@ -50,7 +50,7 @@ const VolumeControl = () => {
                 <Card sx={volumeControlBox}>
                     <Stack sx={volumeControlItem}>
                         <IconButton color='secondary' onClick={increaseVolume}>
-                            <AddRoundedIcon />
+                            <AddRoundedIcon fontSize='large'/>
                         </IconButton>
                     </Stack>
                     <Stack sx={volumeControlItem}>
@@ -58,7 +58,7 @@ const VolumeControl = () => {
                     </Stack>
                     <Stack sx={volumeControlItem}>
                         <IconButton color='secondary' onClick={decreaseVolume}>
-                            <RemoveRoundedIcon />
+                            <RemoveRoundedIcon fontSize='large'/>
                         </IconButton>
                     </Stack>
                 </Card>}
