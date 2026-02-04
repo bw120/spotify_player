@@ -20,9 +20,13 @@ const styles = {
         },
         '& .track-details': {
             textAlign: 'center',
+            maxWidth: '100%',
             '& h1, & h2': {
                 diplay: 'block',
                 margin: '5px',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis'
             },
             '& h1': {
                 color: palette.text.primary
