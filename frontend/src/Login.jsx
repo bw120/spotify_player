@@ -17,23 +17,31 @@ const Login = () => {
   const [loggingIn, setLoggingIn] = useState(!!state && !!code);
   const [error, setError] = useState(errorParam);
 
+  const refresh_token = localStorage.getItem('refresh_token');
+  const access_token = localStorage.getItem('access_token');
+
+
   const handleLogin = () => {
     setLoggingIn(true);
     const url = getAuthorizeSpotifyUrl(uuid);
     window.location.href = url;
   };
 
-  const loginWithCode = async (code) => {
-    const { data, status, error } = await getToken(code);
+  const loginWithCode = async (code, refresh) => {
+    const { data: { access_token: accessToken, refresh_token: refreshToken } = {}, status, error } = await getToken(code, refresh);
     if (status !== 200) {
       setError(error);
       return;
     }
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${data?.access_token}`;
+
+    if (accessToken) {
+      localStorage.setItem('access_token', accessToken);
+    }
+    if (refreshToken) {
+      localStorage.setItem('refresh_token', refreshToken);
+    }
     setLoggingIn(false);
-    setToken(data);
+    setToken({ access_token: accessToken, refresh_token: refreshToken });
     navigate("/");
   };
 
@@ -42,8 +50,12 @@ const Login = () => {
       navigate("/");
     }
 
-    if (!token?.access_token && state === uuid && code && loggingIn) {
+    if (!isLoggedIn && state === uuid && code && loggingIn) {
       loginWithCode(code);
+    }
+
+    if (refresh_token) {
+      loginWithCode(refresh_token, true);
     }
   }, []);
 

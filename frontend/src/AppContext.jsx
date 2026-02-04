@@ -4,11 +4,11 @@ const AppContext = createContext({});
 const useAppContext = () => useContext(AppContext);
 
 const AppProvider = ({ children }) => {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState({});
   const [selectedScreen, setSelectedScreen] = useState(2);
-  const isLoggedIn = !!token?.access_token;
+  const isLoggedIn = !!token.access_token;
 
-  const value = { token, setToken, isLoggedIn, selectedScreen, setSelectedScreen }
+  const value = { setToken, isLoggedIn, selectedScreen, setSelectedScreen }
 
   return (
     <AppContext.Provider value={value}>

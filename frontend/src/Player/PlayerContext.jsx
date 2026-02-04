@@ -45,10 +45,11 @@ const PlayerProvider = ({ children }) => {
             device.id === defaultDeviceId || device.name === defaultDeviceName,
         }));
         setDevices(updateDevices);
+       
       }
     });
   };
-
+ console.log('devices', devices);
   useEffect(() => {
     updateState();
     updateDevices();
