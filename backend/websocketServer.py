@@ -8,7 +8,7 @@ port = 8765
 #host = "192.168.50.32"
 host = '0.0.0.0'
 CONNECTED_CLIENTS = set()
-SESSION_END_TIMEOUT = 3600  # 1 hour in seconds
+INACTIVITY_TIMEOUT = 3600  # 1 hour in seconds
 
 session_start_time = datetime.now()
 
@@ -64,7 +64,7 @@ async def reload_service():
     global session_start_time
     time_difference = now - session_start_time
     difference_seconds = time_difference.total_seconds()
-    if difference_seconds > SESSION_END_TIMEOUT:
+    if difference_seconds > INACTIVITY_TIMEOUT:
         restart_raspotify()
         session_start_time = now  # Reset session start time after restart
     print(f"Task executed at: {now.strftime('%Y-%m-%d %H:%M:%S')} - time_difference={time_difference.total_seconds()} seconds")
