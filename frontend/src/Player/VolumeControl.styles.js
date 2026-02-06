@@ -1,19 +1,23 @@
 const styles = {
     volumeControlBox: {
-        padding: '10px 5px',
+        padding: '10px 10px',
         diplay: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
     },
     speedDial: {
-        position: 'absolute', 
-        top: 20, 
+        position: 'absolute',
+        top: 20,
         right: 22,
         '& .MuiButtonBase-root': {
-            width: '70px',
-            height: '70px'
+            width: '80px',
+            height: '80px',
+            '& svg': {
+                width: '100%',
+                height: '100%'
+            }
         },
-        '& .MuiSpeedDialIcon-root':{
+        '& .MuiSpeedDialIcon-root': {
             width: '50px',
             height: '50px',
             '& svg': {
@@ -28,7 +32,8 @@ const styles = {
         diplay: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: '28px',
+        fontSize: '30px',
+        fontWeight: 'bold',
     }
 };
 

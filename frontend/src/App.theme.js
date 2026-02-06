@@ -24,6 +24,22 @@ const palette = createTheme({
       disabled: '#a2a2a2',
       contrastText: '#fff',
     },
+    typography: {
+      fontFamily: 'Source Sans Pro',
+      h1: {
+        fontSize: '2.8rem',
+        fontWeight: 700,
+      },
+      h2: {
+        fontSize: '2.5rem',
+      },
+      h3: {
+        fontSize: '2rem',
+      },
+      h4: {
+        fontSize: '1.9rem',
+      },
+    },
   }
 });
 

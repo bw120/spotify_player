@@ -10,6 +10,7 @@ const PlayBackControl = () => {
     const [position, setPosition] = useState(0);
     const [paused, setPaused] = useState(false);
     const debounceTimer = useRef(null);
+    const playbackTimer = useRef(null);
     const { sliderStyles, trackInfoBox, playerIcons, containerBox, controlBox, trackTiming } = styles;
 
     const { setLoadingTrack, loadingTrack, updateState, playbackState: {
@@ -72,6 +73,13 @@ const PlayBackControl = () => {
         return `${minutes}:${seconds}`;
     }
 
+    const updatePlaybackPosition = () => {
+        setPosition((prevPosition => prevPosition + (paused ? 0 : 100)))
+        playbackTimer.current = setTimeout(() => {
+            updatePlaybackPosition();
+        }, 100);
+    };
+
     useEffect(() => {
         updateState();
     }, []);
@@ -82,8 +90,8 @@ const PlayBackControl = () => {
     }, [progress_ms, name]);
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            setPosition((prevPosition => prevPosition + (paused ? 0 : 100)));
+        playbackTimer.current = setTimeout(() => {
+            updatePlaybackPosition();
         }, 100);
 
         if (position >= duration_ms) {
@@ -91,7 +99,7 @@ const PlayBackControl = () => {
             setLoadingTrack(true);
         }
 
-        return () => clearInterval(intervalId);
+        return () => clearTimeout(playbackTimer.current);
     }, [duration_ms, is_playing, progress_ms, paused]);
 
     return (
