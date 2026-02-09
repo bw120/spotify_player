@@ -26,7 +26,7 @@ const PlayBackControl = () => {
         images: episodeImages = [],
         show: {
             name: episodeName,
-        },
+        } = {},
         album: {
             name: albumName,
             images: albumImages = []
