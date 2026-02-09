@@ -13,7 +13,7 @@ const PlayBackControl = () => {
     const playbackTimer = useRef(null);
     const { sliderStyles, trackInfoBox, playerIcons, containerBox, controlBox, trackTiming } = styles;
 
-    const { setLoadingTrack, loadingTrack, updateState, playbackState: {
+    const { setLoadingTrack, loadingTrack, updateState, playbackState, playbackState: {
         progress_ms,
         is_playing,
         item
@@ -23,13 +23,17 @@ const PlayBackControl = () => {
         duration_ms,
         name,
         artists = [],
+        images: episodeImages = [],
+        show: {
+            name: episodeName,
+        },
         album: {
             name: albumName,
             images: albumImages = []
         } = {}
     } = item || {};
 
-    const albumArtUrl = albumImages.find(({ height, width }) => (height <= 300 && width <= 300))?.url || '';
+    const itemArtUrl = ([...albumImages, ...episodeImages]).find(({ height, width }) => (height <= 300 && width <= 300))?.url || '';
 
     const togglePaused = () => {
         const apiCall = !paused ? pausePlayback : startPlayback;
@@ -109,7 +113,7 @@ const PlayBackControl = () => {
                     <Skeleton variant="rectangular" width={150} height={150} sx={{ marginRight: '10px' }} />
                 ) : (
                     <>
-                        {albumArtUrl && <img src={albumArtUrl} alt={`Album: ${albumName}`} style={{ marginRight: 10 }} />}
+                        {itemArtUrl && <img src={itemArtUrl} alt={`Album: ${albumName}`} style={{ marginRight: 10 }} />}
                     </>
                 )}
                 <div className="track-details">
@@ -121,7 +125,7 @@ const PlayBackControl = () => {
                         :
                         <>
                             <h1>{name}</h1>
-                            <h2>{artists.map(({ name }) => name).join(', ')}</h2>
+                            <h2>{artists.map(({ name }) => name).join(', ') || episodeName}</h2>
                         </>}
                 </div>
             </Box>

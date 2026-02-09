@@ -26,6 +26,7 @@ const getPlaybackState = async () =>
   await axios({
     method: "get",
     url: `${SPOTIFY_API_PLAYER_BASE_URL}`,
+    params: { additional_types: 'episode,track' },
   }).catch(({ code, status, response: { data: { error } = {} } = {} }) => {
     return { code, status, error: error || code };
   });
