@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles'
 
-const palette = createTheme({
+const theme = createTheme({
   palette: {
     mode: 'dark',
     primary: {
@@ -23,32 +23,35 @@ const palette = createTheme({
       secondary: '#ffffff',
       disabled: '#a2a2a2',
       contrastText: '#fff',
+    }
+  },
+  typography: {
+    fontFamily: 'Inter Tight, sans-serif',
+    h1: {
+      fontSize: '2rem',
+      fontWeight: 500,
     },
-    typography: {
-      fontFamily: 'Source Sans Pro',
-      h1: {
-        fontSize: '2.8rem',
-        fontWeight: 700,
-      },
-      h2: {
-        fontSize: '2.5rem',
-      },
-      h3: {
-        fontSize: '2rem',
-      },
-      h4: {
-        fontSize: '1.9rem',
-      },
+    h2: {
+      fontSize: '1.5rem',
+      fontWeight: 400,
     },
-  }
+    h3: {
+      fontSize: '1.2rem',
+      fontWeight: 500
+    },
+    h4: {
+      fontSize: '1.1rem',
+      fontWeight: 500,
+    },
+  },
 });
 
-const themeComponentOverrides = createTheme(palette, {
+const themeComponentOverrides = createTheme(theme, {
   components: {
     MuiListItemButton: {
       styleOverrides: {
         root: {
-          color: palette.palette.text.secondary
+          color: theme.palette.text.secondary
         }
       }
     }

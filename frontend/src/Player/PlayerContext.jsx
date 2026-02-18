@@ -13,7 +13,8 @@ const {
   PLAYBACK_PLAYING,
   PLAYBACK_PAUSED,
   PLAYBACK_STOPPED,
-  PLAYBACK_POSITION_CORRECTION
+  PLAYBACK_POSITION_CORRECTION,
+  TRACK_CHANGED
 } = SPOTIFY_EVENTS
 
 const PlayerContext = createContext({});
@@ -45,11 +46,11 @@ const PlayerProvider = ({ children }) => {
             device.id === defaultDeviceId || device.name === defaultDeviceName,
         }));
         setDevices(updateDevices);
-       
+
       }
     });
   };
- console.log('devices', devices);
+  console.log('devices', devices);
   useEffect(() => {
     updateState();
     updateDevices();
@@ -61,7 +62,8 @@ const PlayerProvider = ({ children }) => {
       PLAYBACK_PLAYING,
       PLAYBACK_PAUSED,
       PLAYBACK_STOPPED,
-      PLAYBACK_POSITION_CORRECTION].includes(messages?.at(-1)?.player_event)) {
+      PLAYBACK_POSITION_CORRECTION,
+      TRACK_CHANGED].includes(messages?.at(-1)?.player_event)) {
       updateState();
     }
   }, [messages]);

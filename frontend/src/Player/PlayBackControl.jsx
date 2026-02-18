@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Box, Slider, IconButton, Skeleton } from "@mui/material";
+import { Box, Slider, IconButton, Typography, Skeleton } from "@mui/material";
 import { PauseRounded, PlayArrowRounded, FastForwardRounded, FastRewindRounded } from '@mui/icons-material';
 
 import { pausePlayback, startPlayback, skipToNext, skipToPrevious, setPlaybackPosition } from "../api/player";
@@ -13,7 +13,7 @@ const PlayBackControl = () => {
     const playbackTimer = useRef(null);
     const { sliderStyles, trackInfoBox, playerIcons, containerBox, controlBox, trackTiming } = styles;
 
-    const { setLoadingTrack, loadingTrack, updateState, playbackState, playbackState: {
+    const { setLoadingTrack, loadingTrack, updateState, playbackState: {
         progress_ms,
         is_playing,
         item
@@ -110,7 +110,7 @@ const PlayBackControl = () => {
         <Box sx={containerBox}>
             <Box sx={trackInfoBox}>
                 {loadingTrack ? (
-                    <Skeleton variant="rectangular" width={150} height={150} sx={{ marginRight: '10px' }} />
+                    <Skeleton variant="rectangular" width={180} height={180} sx={{ marginRight: '10px' }} />
                 ) : (
                     <>
                         {itemArtUrl && <img src={itemArtUrl} alt={`Album: ${albumName}`} style={{ marginRight: 10 }} />}
@@ -124,8 +124,8 @@ const PlayBackControl = () => {
                         </>
                         :
                         <>
-                            <h1>{name}</h1>
-                            <h2>{artists.map(({ name }) => name).join(', ') || episodeName}</h2>
+                            <Typography variant="h1">{name}</Typography>
+                            <Typography variant="h2">{artists.map(({ name }) => name).join(', ') || episodeName}</Typography>
                         </>}
                 </div>
             </Box>
