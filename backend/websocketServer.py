@@ -3,19 +3,19 @@ import asyncio
 from datetime import datetime
 import websockets
 import subprocess
+import screenDimmer
 
 port = 8765
 #host = "192.168.50.32"
 host = '0.0.0.0'
 CONNECTED_CLIENTS = set()
 INACTIVITY_TIMEOUT = 3600  # 1 hour in seconds
+SCREEN_DIM_TIMEOUT = 300  # 5 minutes in seconds
 
 session_start_time = datetime.now()
+screen_auto_dimmed = False
 
 async def broadcast(message):
-    """
-    Sends a message to all clients in the CONNECTED_CLIENTS set.
-    """
     if CONNECTED_CLIENTS:
         global session_start_time
         # reset session_start_time on each broadcast
@@ -24,9 +24,6 @@ async def broadcast(message):
         await asyncio.gather(*[client.send(message) for client in CONNECTED_CLIENTS])
 
 async def handler(websocket):
-    """
-    This function manages a single client connection.
-    """
     # Register new client
     CONNECTED_CLIENTS.add(websocket)
     print(f"Client connected: {websocket.remote_address}. Total clients: {len(CONNECTED_CLIENTS)}")
@@ -35,6 +32,30 @@ async def handler(websocket):
         # Continuously receive and process messages
         async for message in websocket:
             print(f"Received message from client: {message}")
+            
+            # Wake screen on any activity if it was auto-dimmed
+            global screen_auto_dimmed
+            if screen_auto_dimmed:
+                screenDimmer.cancel_dimming()
+                screen_auto_dimmed = False
+                print("Screen woken up due to activity")
+            
+            # Handle screen dimming events
+            if message == "sleep":
+                screenDimmer.set_dim_level(0)
+                print("Screen dimmed to 0% (sleep mode)")
+            
+            if message == "wake":
+                screenDimmer.cancel_dimming()
+                screen_auto_dimmed = False
+                print("Screen dimming cancelled (wake mode)")
+
+            # When a session disconnects, the device no longer is visible in the Spotify API.
+            # This reconnects the device by restarting the Raspotify service
+            if message == "session_disconnected":
+                print("Session disconnected - reconnecting...")
+                restart_raspotify()
+            
             await broadcast(message)
             
     except websockets.exceptions.ConnectionClosed as e:
@@ -59,14 +80,27 @@ def restart_raspotify():
 
 
 async def reload_service():
-    """The function that will run every minute."""
+    """
+    Reload the Raspotify service after a period of inactivity. 
+    This is a hack to make the devices stay active in the Spotify API.
+    Also dims the screen after 10 minutes of inactivity.
+    """
     now = datetime.now()
-    global session_start_time
+    global session_start_time, screen_auto_dimmed
     time_difference = now - session_start_time
     difference_seconds = time_difference.total_seconds()
+    
+    # Auto-dim screen after 10 minutes of inactivity
+    if difference_seconds > SCREEN_DIM_TIMEOUT and not screen_auto_dimmed:
+        screenDimmer.set_dim_level(0)
+        screen_auto_dimmed = True
+        print(f"Screen auto-dimmed after {SCREEN_DIM_TIMEOUT} seconds of inactivity")
+    
+    # Restart Raspotify after 1 hour of inactivity
     if difference_seconds > INACTIVITY_TIMEOUT:
         restart_raspotify()
         session_start_time = now  # Reset session start time after restart
+    
     print(f"Task executed at: {now.strftime('%Y-%m-%d %H:%M:%S')} - time_difference={time_difference.total_seconds()} seconds")
     
 async def run_periodically(interval, periodic_function):
