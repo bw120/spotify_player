@@ -157,6 +157,7 @@ const PlayBackControl = () => {
                 sx={sliderStyles}
                 max={duration_ms}
                 onChange={handleSetPlayPosition}
+                inputProps={{ inputMode: 'none' }}
             />
             <Box sx={trackTiming}>
                 {!loadingTrack && <>

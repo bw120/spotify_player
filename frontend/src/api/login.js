@@ -11,7 +11,8 @@ const scope = [
   "playlist-modify-public",
   "user-read-playback-position",
   "user-read-recently-played",
-  "user-top-read"
+  "user-top-read",
+  "app-remote-control",
 ];
 
 const isDevelopment = process.env.NODE_ENV === 'development';

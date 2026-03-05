@@ -6,8 +6,11 @@ import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 
 import { setPlaybackVolume } from '../api/player';
 import { usePlayerContext } from "./PlayerContext";
+import usePlaybackEvents from "./PlaybackEvents";
 import styles from './VolumeControl.styles';
+import { SPOTIFY_EVENTS } from '../constants';
 
+const { VOLUME_CHANGED } = SPOTIFY_EVENTS;
 const VOLUME_STEP = 5;
 const AUTO_CLOSE_TIMEOUT = 5000;
 
@@ -15,12 +18,12 @@ let closeTimer;
 
 const VolumeControl = () => {
     const { buttonStyles, buttonOpenStyles, volumeControlBox, volumeControlItem, speedDial } = styles;
-    const { playbackState: { device: { volume_percent } = {} } = {} } = usePlayerContext()
+    const { updateState, playbackState: { device: { volume_percent } = {} } = {} } = usePlayerContext()
     const [volume, setVolume] = useState(null);
     const [open, setOpen] = useState(false);
     const toggleOpen = () => setOpen(prevState => !prevState);
     const closeVolumeControl = () => setOpen(false);
-
+    const { messages } = usePlaybackEvents();
     const changeVolume = (newVolume) => {
         if (newVolume === volume) return;
         setVolume(newVolume);
@@ -51,6 +54,12 @@ const VolumeControl = () => {
         }
         return () => clearTimeout(closeTimer);
     }, [open]);
+
+      useEffect(() => {
+    if ([VOLUME_CHANGED].includes(messages?.at(-1)?.player_event)) {
+       updateState()
+    }
+  }, [messages]);
 
     return (
         <ClickAwayListener onClickAway={closeVolumeControl}>

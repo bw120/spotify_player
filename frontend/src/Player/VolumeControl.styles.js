@@ -1,5 +1,19 @@
 const styles = {
+    buttonStyles: ({ palette }) => ({
+        borderRadius: '50%',
+        width: '50px',
+        height: '50px',
+        backgroundColor: palette.primary.main,
+        transition: 'transform 225ms cubic-bezier(0.4, 0, 0.2, 1)',
+        '&:hover': {
+            backgroundColor: palette.primary.main
+        },
+        '&.open': {
+            transform: 'rotate(45deg)'
+        }
+    }),
     volumeControlBox: {
+        marginTop: '10px',
         padding: '10px 10px',
         diplay: 'flex',
         flexDirection: 'column',
