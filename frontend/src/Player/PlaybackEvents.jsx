@@ -5,7 +5,10 @@ const WEBSOCKET_URL = process.env.REACT_APP_SPOTIFY_WEBSOCKET_URL;
 
 const usePlaybackEvents = () => {
     const [messageHistory, setMessageHistory] = useState([]);
-    const { sendMessage, lastMessage, readyState } = useWebSocket(WEBSOCKET_URL);
+    const { sendMessage, lastMessage, readyState } = useWebSocket(WEBSOCKET_URL, {
+        shouldReconnect: (closeEvent) => true,
+        reconnectInterval: 3000,
+    });
 
 
     useEffect(() => {

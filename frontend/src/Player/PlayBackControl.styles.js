@@ -6,24 +6,24 @@ const styles = {
         justifyContent: 'center',
         width: '100%',
         color: '#fff',
-        paddingTop: '5px',
+        padding: '5px 0',
     },
     trackInfoBox: ({ palette }) => ({
         width: '90%',
-        paddgin: '5px',
         flexDirection: 'column',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         '& img': {
-            height: 150
+            height: 185,
+            marginBottom: '5px'
         },
         '& .track-details': {
             textAlign: 'center',
             maxWidth: '100%',
             '& h1, & h2': {
-                diplay: 'block',
-                margin: '5px',
+                lineHeight: 1.2,
+                display: 'block',
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis'
@@ -39,6 +39,8 @@ const styles = {
     }),
     controlBox: {
         margin: '0',
+        display: 'flex',
+        alignItems: 'center',
         '& button': {
             padding: 0
         }
@@ -64,6 +66,9 @@ const styles = {
         },
         '& .MuiSlider-rail': {
             opacity: 0.30,
+        },
+        '&.MuiSlider-root': {
+            padding: '10px 0'
         }
     }),
     playerIcons: ({ palette }) => ({

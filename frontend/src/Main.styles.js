@@ -4,11 +4,12 @@ const styles = {
         height: 480
     },
     contentScreenStyles: {
+        position: 'relative',
         paddingTop: '10px',
         width: '100%',
         height: 'calc(100% - 60px)',
         display: 'flex',
-        justifyContent: 'flex-start',
+        justifyContent: 'flex-end',
         alignItems: 'center',
         flexDirection: 'column'
     },

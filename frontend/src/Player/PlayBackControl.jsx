@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { Box, Slider, IconButton, Skeleton } from "@mui/material";
+import { Box, Slider, IconButton, Typography, Skeleton } from "@mui/material";
 import { PauseRounded, PlayArrowRounded, FastForwardRounded, FastRewindRounded } from '@mui/icons-material';
 
 import { pausePlayback, startPlayback, skipToNext, skipToPrevious, setPlaybackPosition } from "../api/player";
@@ -10,6 +10,7 @@ const PlayBackControl = () => {
     const [position, setPosition] = useState(0);
     const [paused, setPaused] = useState(false);
     const debounceTimer = useRef(null);
+    const playbackTimer = useRef(null);
     const { sliderStyles, trackInfoBox, playerIcons, containerBox, controlBox, trackTiming } = styles;
 
     const { setLoadingTrack, loadingTrack, updateState, playbackState: {
@@ -22,13 +23,17 @@ const PlayBackControl = () => {
         duration_ms,
         name,
         artists = [],
+        images: episodeImages = [],
+        show: {
+            name: episodeName,
+        } = {},
         album: {
             name: albumName,
             images: albumImages = []
         } = {}
     } = item || {};
 
-    const albumArtUrl = albumImages.find(({ height, width }) => (height <= 300 && width <= 300))?.url || '';
+    const itemArtUrl = ([...albumImages, ...episodeImages]).find(({ height, width }) => (height <= 300 && width <= 300))?.url || '';
 
     const togglePaused = () => {
         const apiCall = !paused ? pausePlayback : startPlayback;
@@ -72,6 +77,13 @@ const PlayBackControl = () => {
         return `${minutes}:${seconds}`;
     }
 
+    const updatePlaybackPosition = () => {
+        setPosition((prevPosition => prevPosition + (paused ? 0 : 100)))
+        playbackTimer.current = setTimeout(() => {
+            updatePlaybackPosition();
+        }, 100);
+    };
+
     useEffect(() => {
         updateState();
     }, []);
@@ -82,8 +94,8 @@ const PlayBackControl = () => {
     }, [progress_ms, name]);
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            setPosition((prevPosition => prevPosition + (paused ? 0 : 100)));
+        playbackTimer.current = setTimeout(() => {
+            updatePlaybackPosition();
         }, 100);
 
         if (position >= duration_ms) {
@@ -91,17 +103,17 @@ const PlayBackControl = () => {
             setLoadingTrack(true);
         }
 
-        return () => clearInterval(intervalId);
+        return () => clearTimeout(playbackTimer.current);
     }, [duration_ms, is_playing, progress_ms, paused]);
 
     return (
         <Box sx={containerBox}>
             <Box sx={trackInfoBox}>
                 {loadingTrack ? (
-                    <Skeleton variant="rectangular" width={150} height={150} sx={{ marginRight: '10px' }} />
+                    <Skeleton variant="rectangular" width={180} height={180} sx={{ marginRight: '10px' }} />
                 ) : (
                     <>
-                        {albumArtUrl && <img src={albumArtUrl} alt={`Album: ${albumName}`} style={{ marginRight: 10 }} />}
+                        {itemArtUrl && <img src={itemArtUrl} alt={`Album: ${albumName}`} style={{ marginRight: 10 }} />}
                     </>
                 )}
                 <div className="track-details">
@@ -112,8 +124,8 @@ const PlayBackControl = () => {
                         </>
                         :
                         <>
-                            <h1>{name}</h1>
-                            <h2>{artists.map(({ name }) => name).join(', ')}</h2>
+                            <Typography variant="h1">{name}</Typography>
+                            <Typography variant="h2">{artists.map(({ name }) => name).join(', ') || episodeName}</Typography>
                         </>}
                 </div>
             </Box>
@@ -145,6 +157,7 @@ const PlayBackControl = () => {
                 sx={sliderStyles}
                 max={duration_ms}
                 onChange={handleSetPlayPosition}
+                inputProps={{ inputMode: 'none' }}
             />
             <Box sx={trackTiming}>
                 {!loadingTrack && <>

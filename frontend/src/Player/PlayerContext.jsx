@@ -13,7 +13,9 @@ const {
   PLAYBACK_PLAYING,
   PLAYBACK_PAUSED,
   PLAYBACK_STOPPED,
-  PLAYBACK_POSITION_CORRECTION
+  PLAYBACK_POSITION_CORRECTION,
+  TRACK_CHANGED,
+  PLAYBACK_SEEKED
 } = SPOTIFY_EVENTS
 
 const PlayerContext = createContext({});
@@ -23,7 +25,7 @@ const PlayerProvider = ({ children }) => {
   const [devices, setDevices] = useState(null);
   const [playbackState, setPlaybackState] = useState({});
   const [loadingTrack, setLoadingTrack] = useState(true);
-  const { messages } = usePlaybackEvents();
+  const { messages, sendMessage } = usePlaybackEvents();
 
   const updateState = () => {
     getPlaybackState().then(({ error, data } = {}) => {
@@ -45,11 +47,10 @@ const PlayerProvider = ({ children }) => {
             device.id === defaultDeviceId || device.name === defaultDeviceName,
         }));
         setDevices(updateDevices);
-       
+
       }
     });
   };
- console.log('devices', devices);
   useEffect(() => {
     updateState();
     updateDevices();
@@ -61,10 +62,24 @@ const PlayerProvider = ({ children }) => {
       PLAYBACK_PLAYING,
       PLAYBACK_PAUSED,
       PLAYBACK_STOPPED,
-      PLAYBACK_POSITION_CORRECTION].includes(messages?.at(-1)?.player_event)) {
+      PLAYBACK_POSITION_CORRECTION,
+      PLAYBACK_SEEKED,
+      TRACK_CHANGED].includes(messages?.at(-1)?.player_event)) {
       updateState();
     }
   }, [messages]);
+
+  useEffect(() => {
+    const handleClick = () => {
+      sendMessage(JSON.stringify({ type: 'wake' }));
+    };
+
+    document.addEventListener('click', handleClick);
+
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [sendMessage]);
 
   const value = { devices, playbackState, updateState, updateDevices, loadingTrack, setLoadingTrack };
 
