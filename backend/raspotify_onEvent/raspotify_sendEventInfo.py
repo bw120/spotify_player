@@ -2,6 +2,7 @@ import asyncio
 import os
 import websockets
 import json
+import sys
 
 port = 8765
 host = "192.168.50.32"
@@ -10,8 +11,12 @@ async def echo_client():
     # The URI for the WebSocket server
     uri = f"ws://{host}:{port}"
 
+    event_context = sys.argv[1] if len(sys.argv) > 1 else None
+
     # Get environment variables passed by librespot
     player_event = os.environ.get("PLAYER_EVENT")
+    user_name = os.environ.get("USER_NAME")
+    connection_id = os.environ.get("CONNECTION_ID")
     track_id = os.environ.get("TRACK_ID") 
     client_id = os.environ.get("CLIENT_ID")
     client_name = os.environ.get("CLIENT_NAME")
@@ -39,30 +44,37 @@ async def echo_client():
 
 
     event_info = {
-        "player_event": player_event,
-        "track_id": track_id,
-        "client_id": client_id,
-        "client_name": client_name,
-        "client_brand_name": client_brand_name,
-        "client_model_name": client_model_name,
-        "volume": volume,
-        "shuffle": shuffle,
-        "repeat": repeat,
-        "auto_play": auto_play,
-        "filter": filter,
-        "item_type": item_type,
-        "track_ids": track_ids,
-        "name": name,
-        "duration_ms": duration_ms,
-        "covers": covers,
-        "is_explicit": is_explicit,
-        "number": number,
-        "album": album,
-        "artists": artists,
-        "album_artists": album_artists,
-        "show_name": show_name,
-        "description": description,
-        "position_ms": position_ms
+        "event": player_event,
+        "context": event_context,
+        "event_details": {        
+            "event_context": event_context,
+            "user_name": user_name,
+            "connection_id": connection_id,
+            "player_event": player_event,
+            "track_id": track_id,
+            "client_id": client_id,
+            "client_name": client_name,
+            "client_brand_name": client_brand_name,
+            "client_model_name": client_model_name,
+            "volume": volume,
+            "shuffle": shuffle,
+            "repeat": repeat,
+            "auto_play": auto_play,
+            "filter": filter,
+            "item_type": item_type,
+            "track_ids": track_ids,
+            "name": name,
+            "duration_ms": duration_ms,
+            "covers": covers,
+            "is_explicit": is_explicit,
+            "number": number,
+            "album": album,
+            "artists": artists,
+            "album_artists": album_artists,
+            "show_name": show_name,
+            "description": description,
+            "position_ms": position_ms
+        }
     }
     # Use async with as a context manager to ensure the connection is closed
     try:

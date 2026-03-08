@@ -4,6 +4,7 @@ from datetime import datetime
 import websockets
 import subprocess
 import screenDimmer
+import json
 
 port = 8765
 #host = "192.168.50.32"
@@ -31,28 +32,22 @@ async def handler(websocket):
     try:
         # Continuously receive and process messages
         async for message in websocket:
-            print(f"Received message from client: {message}")
-            
-            # Wake screen on any activity if it was auto-dimmed
-            global screen_auto_dimmed
-            if screen_auto_dimmed:
-                screenDimmer.cancel_dimming()
-                screen_auto_dimmed = False
-                print("Screen woken up due to activity")
-            
+            event = json.loads(message).get("event")
+            print(f"Received event from client: {event}")
+
             # Handle screen dimming events
-            if message == "sleep":
+            if event == "sleep":
                 screenDimmer.set_dim_level(0)
                 print("Screen dimmed to 0% (sleep mode)")
             
-            if message == "wake":
+            if event == "wake" and screen_auto_dimmed:
                 screenDimmer.cancel_dimming()
                 screen_auto_dimmed = False
                 print("Screen dimming cancelled (wake mode)")
 
             # When a session disconnects, the device no longer is visible in the Spotify API.
             # This reconnects the device by restarting the Raspotify service
-            if message == "session_disconnected":
+            if event == "session_disconnected":
                 print("Session disconnected - reconnecting...")
                 restart_raspotify()
             
@@ -79,12 +74,7 @@ def restart_raspotify():
         print("Error: 'systemctl' command not found. Ensure it is installed and in your PATH.")
 
 
-async def reload_service():
-    """
-    Reload the Raspotify service after a period of inactivity. 
-    This is a hack to make the devices stay active in the Spotify API.
-    Also dims the screen after 10 minutes of inactivity.
-    """
+async def handle_inactivity():
     now = datetime.now()
     global session_start_time, screen_auto_dimmed
     time_difference = now - session_start_time
@@ -96,7 +86,12 @@ async def reload_service():
         screen_auto_dimmed = True
         print(f"Screen auto-dimmed after {SCREEN_DIM_TIMEOUT} seconds of inactivity")
     
-    # Restart Raspotify after 1 hour of inactivity
+
+    """
+    Reload the Raspotify service after a period of inactivity. 
+    This is a hack to make the devices stay active in the Spotify API.
+    Also dims the screen after 10 minutes of inactivity.
+    """
     if difference_seconds > INACTIVITY_TIMEOUT:
         restart_raspotify()
         session_start_time = now  # Reset session start time after restart
@@ -113,7 +108,7 @@ def process_response(connection, request, response):
     response.headers["Access-Control-Allow-Origin"] = "*"
 
 async def main():
-    task = asyncio.create_task(run_periodically(100, reload_service))
+    task = asyncio.create_task(run_periodically(100, handle_inactivity))
     # Start the server on localhost port 8765
     async with websockets.serve(handler, host, port, process_response=process_response):
         print(f"WebSocket server started and listening on ws://{host}:{port}")
