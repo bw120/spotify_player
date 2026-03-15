@@ -5,6 +5,9 @@ export const APP_SCREENS = {
 }
 
 export const SPOTIFY_EVENTS = {
+    SESSION_CONNECTED: "session_connected",
+    SESSION_DISCONNECTED: "session_disconnected",
+    SESSION_CLIENT_CHANGED: "session_client_changed",
     PLAYBACK_ID_CHANGED: "play_request_id_changed",
     PLAYBACK_LOADING: 'loading',
     PLAYBACK_PRELOADING: 'preloading',
@@ -21,5 +24,9 @@ export const SPOTIFY_EVENTS = {
     REPEAT_CHANGED: "repeat_changed",
     AUTO_PLAY_CHANGED: "auto_play_changed",
     FILTER_EXPLICIT_CHANGED: "filter_explicit_changed",
+}
 
+export const PLAYER_CONTEXT = {
+    EXTERNAL_ACCOUNT: 'EXTERNAL_ACCOUNT',
+    LOCAL_ACCOUNT: 'LOCAL_ACCOUNT'
 }

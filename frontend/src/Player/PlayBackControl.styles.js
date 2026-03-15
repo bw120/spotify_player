@@ -45,6 +45,9 @@ const styles = {
             padding: 0
         }
     },
+    playingExternal: {
+        margin: '0 0 50px 0',
+    },
     sliderStyles: ({ palette, applyStyles }) => ({
         color: palette.primary.light,
         height: 12,

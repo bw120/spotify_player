@@ -6,11 +6,11 @@ import VolumeControl from "./VolumeControl";
 import styles from './Player.styles';
 
 const Player = () => {
-  const { playbackState } = usePlayerContext()
+  const { playbackState, isExternallyControlled } = usePlayerContext()
   const { container } = styles;
   return (<>
-    {playbackState ? <PlayBackControl /> : <Stack sx={container}><h2>Nothing is currently playing.</h2></Stack>}
-    <VolumeControl />
+    {(playbackState.item || isExternallyControlled) ? <PlayBackControl /> : <Stack sx={container}><h2>Nothing is currently playing.</h2></Stack>}
+    {!isExternallyControlled && <VolumeControl />}
   </>);
 };
 

@@ -19,7 +19,7 @@ let closeTimer;
 const VolumeControl = () => {
     const { buttonStyles, buttonOpenStyles, volumeControlBox, volumeControlItem, speedDial } = styles;
     const { updateState, playbackState: { device: { volume_percent } = {} } = {} } = usePlayerContext()
-    const [volume, setVolume] = useState(null);
+    const [volume, setVolume] = useState(10);
     const [open, setOpen] = useState(false);
     const toggleOpen = () => setOpen(prevState => !prevState);
     const closeVolumeControl = () => setOpen(false);
@@ -56,7 +56,7 @@ const VolumeControl = () => {
     }, [open]);
 
       useEffect(() => {
-    if ([VOLUME_CHANGED].includes(messages?.at(-1)?.player_event)) {
+    if ([VOLUME_CHANGED].includes(messages?.at(-1)?.event)) {
        updateState()
     }
   }, [messages]);

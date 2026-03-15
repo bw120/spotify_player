@@ -11,9 +11,9 @@ const PlayBackControl = () => {
     const [paused, setPaused] = useState(false);
     const debounceTimer = useRef(null);
     const playbackTimer = useRef(null);
-    const { sliderStyles, trackInfoBox, playerIcons, containerBox, controlBox, trackTiming } = styles;
+    const { sliderStyles, trackInfoBox, playerIcons, containerBox, controlBox, playingExternal, trackTiming } = styles;
 
-    const { setLoadingTrack, loadingTrack, updateState, playbackState: {
+    const { setLoadingTrack, loadingTrack, updateState, isExternallyControlled, playbackState: {
         progress_ms,
         is_playing,
         item
@@ -91,7 +91,7 @@ const PlayBackControl = () => {
     useEffect(() => {
         setPosition(progress_ms || 0);
         setPaused(!is_playing);
-    }, [progress_ms, name]);
+    }, [progress_ms, is_playing, name]);
 
     useEffect(() => {
         playbackTimer.current = setTimeout(() => {
@@ -105,7 +105,7 @@ const PlayBackControl = () => {
 
         return () => clearTimeout(playbackTimer.current);
     }, [duration_ms, is_playing, progress_ms, paused]);
-
+    
     return (
         <Box sx={containerBox}>
             <Box sx={trackInfoBox}>
@@ -129,24 +129,26 @@ const PlayBackControl = () => {
                         </>}
                 </div>
             </Box>
-            <Box sx={controlBox}>
-                <IconButton onClick={handleSkipToPrevious} aria-label="previous song">
-                    <FastRewindRounded sx={playerIcons} />
-                </IconButton>
-                <IconButton
-                    aria-label={is_playing ? 'play' : 'pause'}
-                    onClick={togglePaused}
-                >
-                    {paused ? (
-                        <PlayArrowRounded sx={playerIcons} />
-                    ) : (
-                        <PauseRounded sx={playerIcons} />
-                    )}
-                </IconButton>
-                <IconButton onClick={handleSkipToNext} aria-label="next song">
-                    <FastForwardRounded sx={playerIcons} />
-                </IconButton>
-            </Box>
+            {isExternallyControlled ?
+                <Box sx={playingExternal} /> :
+                <Box sx={controlBox}>
+                    <IconButton onClick={handleSkipToPrevious} aria-label="previous song">
+                        <FastRewindRounded sx={playerIcons} />
+                    </IconButton>
+                    <IconButton
+                        aria-label={is_playing ? 'play' : 'pause'}
+                        onClick={togglePaused}
+                    >
+                        {paused ? (
+                            <PlayArrowRounded sx={playerIcons} />
+                        ) : (
+                            <PauseRounded sx={playerIcons} />
+                        )}
+                    </IconButton>
+                    <IconButton onClick={handleSkipToNext} aria-label="next song">
+                        <FastForwardRounded sx={playerIcons} />
+                    </IconButton>
+                </Box>}
             <Slider
                 aria-label="time-indicator"
                 disabled={loadingTrack}
