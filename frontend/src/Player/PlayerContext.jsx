@@ -22,7 +22,7 @@ const {
   PLAYBACK_SEEKED
 } = SPOTIFY_EVENTS
 
-const { EXTERNAL_ACCOUNT } = PLAYER_CONTEXT;
+const { EXTERNAL_ACCOUNT, UI } = PLAYER_CONTEXT;
 
 const PlayerContext = createContext({});
 const usePlayerContext = () => useContext(PlayerContext);
@@ -71,7 +71,7 @@ const PlayerProvider = ({ children }) => {
       updateState();
     }
   }
-console.log('playbackState', playbackState)
+
   const getExternalPlaybackState = (event, eventDetails) => {
     if ([PLAYBACK_STOPPED, SESSION_DISCONNECTED].includes(event)) {
       setPlaybackState({});
@@ -133,6 +133,10 @@ console.log('playbackState', playbackState)
 
   useEffect(() => {
     const { event, context, event_details } = messages?.at(-1) || {};
+
+    if ([UI].includes(context)) {
+      return;
+    }
     const isExternal = context === EXTERNAL_ACCOUNT;
     setIsExternallyControlled(isExternal);
 
