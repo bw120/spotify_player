@@ -27,6 +27,7 @@ async def broadcast(message):
 async def handler(websocket):
     # Register new client
     CONNECTED_CLIENTS.add(websocket)
+    global screen_auto_dimmed
     print(f"Client connected: {websocket.remote_address}. Total clients: {len(CONNECTED_CLIENTS)}")
     
     try:
@@ -38,9 +39,10 @@ async def handler(websocket):
             # Handle screen dimming events
             if event == "sleep":
                 screenDimmer.set_dim_level(0)
+                screen_auto_dimmed = False
                 print("Screen dimmed to 0% (sleep mode)")
             
-            if event == "wake" and screen_auto_dimmed:
+            if event == "wake":
                 screenDimmer.cancel_dimming()
                 screen_auto_dimmed = False
                 print("Screen dimming cancelled (wake mode)")
@@ -109,6 +111,9 @@ def process_response(connection, request, response):
 
 async def main():
     task = asyncio.create_task(run_periodically(100, handle_inactivity))
+    # reset screen dimming on server start
+    print('Resetting screen dimming on server start...')
+    screenDimmer.set_dim_level(100)
     # Start the server on localhost port 8765
     async with websockets.serve(handler, host, port, process_response=process_response):
         print(f"WebSocket server started and listening on ws://{host}:{port}")
