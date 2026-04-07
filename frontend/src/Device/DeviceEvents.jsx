@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
-const WEBSOCKET_URL = process.env.REACT_APP_SPOTIFY_WEBSOCKET_URL;
+const DEVICE_WEBSOCKET_URL = process.env.REACT_APP_SPOTIFY_DEVICE_WEBSOCKET_URL;
 
-const usePlaybackEvents = () => {
+const useDeviceEvents = () => {
     const [messageHistory, setMessageHistory] = useState([]);
-    const { sendMessage, lastMessage, readyState } = useWebSocket(WEBSOCKET_URL, {
+    const { sendMessage, lastMessage, readyState } = useWebSocket(DEVICE_WEBSOCKET_URL, {
         shouldReconnect: (closeEvent) => true,
         reconnectInterval: 3000,
     });
@@ -27,5 +27,5 @@ const usePlaybackEvents = () => {
     return { messages: messageHistory, sendMessage, connectionStatus: connectionStatus[readyState] }
 }
 
-export default usePlaybackEvents;
+export default useDeviceEvents;
 

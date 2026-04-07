@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Box, Slider, IconButton, Typography, Skeleton } from "@mui/material";
 import { PauseRounded, PlayArrowRounded, FastForwardRounded, FastRewindRounded } from '@mui/icons-material';
 
-import { pausePlayback, startPlayback, skipToNext, skipToPrevious, setPlaybackPosition } from "../api/player";
+import { pausePlayback, resumePlayback, skipToNext, skipToPrevious, setPlaybackPosition } from "../api/librespot/player";
 import { usePlayerContext } from "./PlayerContext";
 import styles from './PlayBackControl.styles';
 
@@ -13,7 +13,7 @@ const PlayBackControl = () => {
     const playbackTimer = useRef(null);
     const { sliderStyles, trackInfoBox, playerIcons, containerBox, controlBox, playingExternal, trackTiming } = styles;
 
-    const { setLoadingTrack, loadingTrack, updateState, isExternallyControlled, playbackState: {
+    const { setLoadingTrack, loadingTrack, updateState, playbackState: {
         progress_ms,
         is_playing,
         item
@@ -36,7 +36,7 @@ const PlayBackControl = () => {
     const itemArtUrl = ([...albumImages, ...episodeImages]).find(({ height, width }) => (height <= 300 && width <= 300))?.url || '';
 
     const togglePaused = () => {
-        const apiCall = !paused ? pausePlayback : startPlayback;
+        const apiCall = !paused ? pausePlayback : resumePlayback;
         apiCall().then((response = {}) => {
             setPaused(prevState => !prevState);
         })
@@ -64,7 +64,7 @@ const PlayBackControl = () => {
         }
 
         debounceTimer.current = setTimeout(() => {
-            setPlaybackPosition({ position_ms: value }).then((response = {}) => {
+            setPlaybackPosition({ position: value }).then((response = {}) => {
             });
         }, 1000);
     };
@@ -105,7 +105,7 @@ const PlayBackControl = () => {
 
         return () => clearTimeout(playbackTimer.current);
     }, [duration_ms, is_playing, progress_ms, paused]);
-    
+
     return (
         <Box sx={containerBox}>
             <Box sx={trackInfoBox}>
@@ -129,26 +129,24 @@ const PlayBackControl = () => {
                         </>}
                 </div>
             </Box>
-            {isExternallyControlled ?
-                <Box sx={playingExternal} /> :
-                <Box sx={controlBox}>
-                    <IconButton onClick={handleSkipToPrevious} aria-label="previous song">
-                        <FastRewindRounded sx={playerIcons} />
-                    </IconButton>
-                    <IconButton
-                        aria-label={is_playing ? 'play' : 'pause'}
-                        onClick={togglePaused}
-                    >
-                        {paused ? (
-                            <PlayArrowRounded sx={playerIcons} />
-                        ) : (
-                            <PauseRounded sx={playerIcons} />
-                        )}
-                    </IconButton>
-                    <IconButton onClick={handleSkipToNext} aria-label="next song">
-                        <FastForwardRounded sx={playerIcons} />
-                    </IconButton>
-                </Box>}
+            <Box sx={controlBox}>
+                <IconButton onClick={handleSkipToPrevious} aria-label="previous song">
+                    <FastRewindRounded sx={playerIcons} />
+                </IconButton>
+                <IconButton
+                    aria-label={is_playing ? 'play' : 'pause'}
+                    onClick={togglePaused}
+                >
+                    {paused ? (
+                        <PlayArrowRounded sx={playerIcons} />
+                    ) : (
+                        <PauseRounded sx={playerIcons} />
+                    )}
+                </IconButton>
+                <IconButton onClick={handleSkipToNext} aria-label="next song">
+                    <FastForwardRounded sx={playerIcons} />
+                </IconButton>
+            </Box>
             <Slider
                 aria-label="time-indicator"
                 disabled={loadingTrack}

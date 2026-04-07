@@ -4,13 +4,13 @@ import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import RemoveRoundedIcon from '@mui/icons-material/RemoveRounded';
 
-import { setPlaybackVolume } from '../api/player';
+import { setPlaybackVolume } from '../api/librespot/player';
 import { usePlayerContext } from "./PlayerContext";
 import usePlaybackEvents from "./PlaybackEvents";
 import styles from './VolumeControl.styles';
 import { SPOTIFY_EVENTS } from '../constants';
 
-const { VOLUME_CHANGED } = SPOTIFY_EVENTS;
+const { VOLUME } = SPOTIFY_EVENTS;
 const VOLUME_STEP = 5;
 const AUTO_CLOSE_TIMEOUT = 5000;
 
@@ -56,7 +56,7 @@ const VolumeControl = () => {
     }, [open]);
 
       useEffect(() => {
-    if ([VOLUME_CHANGED].includes(messages?.at(-1)?.event)) {
+    if ([VOLUME].includes(messages?.at(-1)?.event)) {
        updateState()
     }
   }, [messages]);

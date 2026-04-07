@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Box, BottomNavigation, BottomNavigationAction } from "@mui/material";
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
@@ -6,6 +7,7 @@ import PlaylistPlayRoundedIcon from '@mui/icons-material/PlaylistPlayRounded';
 
 import { useAppContext } from "./AppContext";
 import { PlayerProvider } from "./Player/PlayerContext";
+import useDeviceEvents from "./Device/DeviceEvents";
 import Player from './Player/Player'
 import Library from './Library/Library';
 import Search from './Search/Search';
@@ -23,6 +25,19 @@ const Main = () => {
   const { bottomNav, containerStyles, contentScreenStyles } = styles;
   const handleNavChange = (_e, value) => setSelectedScreen(value);
   const SelectedScreen = ScreenMap[selectedScreen];
+  const { sendMessage } = useDeviceEvents();
+
+  useEffect(() => {
+    const handleClick = () => {
+      sendMessage(JSON.stringify({ event: 'wake', context: 'ui' }));
+    };
+
+    document.addEventListener('click', handleClick);
+
+    return () => {
+      document.removeEventListener('click', handleClick);
+    };
+  }, [sendMessage]);
 
   return (
     <Box sx={containerStyles}>

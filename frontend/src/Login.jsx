@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import { getAuthorizeSpotifyUrl, getToken } from "./api/login";
+import { getAuthorizeSpotifyUrl, getToken } from "./api/spotify/login";
 import { useAppContext } from "./AppContext";
 
 const uuid = process.env.REACT_APP_SPOTIFY_UUID

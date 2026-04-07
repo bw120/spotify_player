@@ -12,7 +12,7 @@ import {
     Typography
 } from '@mui/material';
 
-import { startPlayback, transferPlaybackToDevice } from '../api/player';
+import { startPlayback, transferPlaybackToDevice } from '../api/spotify/player';
 import { APP_SCREENS } from "../constants";
 import { useAppContext } from "../AppContext";
 import { usePlayerContext } from "../Player/PlayerContext";

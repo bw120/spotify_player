@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { SPOTIFY_LOGIN_URL, SPOTIFY_GET_TOKEN_URL } from "./constants";
+import { SPOTIFY_LOGIN_URL, SPOTIFY_GET_TOKEN_URL } from "../constants";
 
 const scope = [
   "user-read-playback-state",

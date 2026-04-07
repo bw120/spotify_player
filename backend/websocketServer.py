@@ -51,7 +51,7 @@ async def handler(websocket):
             # This reconnects the device by restarting the Raspotify service
             if event == "session_disconnected":
                 print("Session disconnected - reconnecting...")
-                restart_raspotify()
+                # restart_raspotify()
             
             await broadcast(message)
             
@@ -95,7 +95,7 @@ async def handle_inactivity():
     Also dims the screen after 10 minutes of inactivity.
     """
     if difference_seconds > INACTIVITY_TIMEOUT:
-        restart_raspotify()
+        # restart_raspotify()
         session_start_time = now  # Reset session start time after restart
     
     print(f"Task executed at: {now.strftime('%Y-%m-%d %H:%M:%S')} - time_difference={time_difference.total_seconds()} seconds")

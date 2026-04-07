@@ -1,6 +1,6 @@
 import axios from "axios";
 
-import { SPOTIFY_API_BASE_URL } from "./constants";
+import { SPOTIFY_API_BASE_URL } from "../constants";
 
 const SPOTIFY_API_PLAYER_BASE_URL = `${SPOTIFY_API_BASE_URL}/me/player`;
 const defaultDeviceId = process.env.REACT_APP_SPOTIFY_DEFAULT_DEVICE_ID;

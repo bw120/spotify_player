@@ -1,0 +1,13 @@
+[Unit]
+Description=Go-librespot spotify player server
+After=network.target
+
+[Service]
+User=bwright
+WorkingDirectory=/home/bwright/go-librespot
+ExecStart=go run ./cmd/daemon
+Restart=always
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

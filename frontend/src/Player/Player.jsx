@@ -1,4 +1,4 @@
-import { Card, Stack, Typography } from '@mui/material';
+import { Stack } from '@mui/material';
 
 import { usePlayerContext } from "./PlayerContext";
 import PlayBackControl from "./PlayBackControl";
@@ -6,11 +6,12 @@ import VolumeControl from "./VolumeControl";
 import styles from './Player.styles';
 
 const Player = () => {
-  const { playbackState, isExternallyControlled } = usePlayerContext()
+  const { playbackState } = usePlayerContext()
   const { container } = styles;
+  console.log('playbackState', playbackState);
   return (<>
-    {(playbackState.item || isExternallyControlled) ? <PlayBackControl /> : <Stack sx={container}><h2>Nothing is currently playing.</h2></Stack>}
-    {!isExternallyControlled && <VolumeControl />}
+    {(playbackState?.item?.name) ? <PlayBackControl /> : <Stack sx={container}><h2>Nothing is currently playing.</h2></Stack>}
+    {<VolumeControl />}
   </>);
 };
 

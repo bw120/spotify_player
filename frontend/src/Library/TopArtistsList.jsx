@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { getUsersTop } from '../api/library';
+import { getUsersTop } from '../api/spotify/library';
 import List from './List'
 import styles from './List.styles';
 

@@ -1,5 +1,1 @@
-# asyncio
-# websockets
-# subprocess
-# time
 RPi

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ToggleButton, ToggleButtonGroup, Stack, Button, TextField } from '@mui/material';
 
-import { search as searchApi } from '../api/search';
+import { search as searchApi } from '../api/spotify/search';
 import SearchResultsList from './SearchResultsList';
 
 const Search = () => {
